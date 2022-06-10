@@ -46,3 +46,5 @@ open `http://localhost:8080/`
 > [gin](https://github.com/gin-gonic/gin)
 
 > [protobuf.js](https://github.com/protobufjs/protobuf.js)
+
+> [Golang Gin 实战（十二）| ProtoBuf 使用和源码分析原理实现](https://zhuanlan.zhihu.com/p/155668671)
