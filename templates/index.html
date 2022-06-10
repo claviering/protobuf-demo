@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <script src="/public/js/protobuf.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/1.0.0-alpha.1/axios.min.js"></script>
+  <title>Document</title>
+</head>
+<body>
+  hello world 22 333
+</body>
+<script>
+protobuf.load("public/proto/awesome.proto", function(err, root) {
+    if (err)
+        throw err;
+
+    var AwesomeMessage = root.lookupType("awesomepackage.AwesomeMessage");
+    var payload = { awesomeField: "Awesome, Awesome, Awesome, Awesome" };
+    var errMsg = AwesomeMessage.verify(payload);
+    if (errMsg)
+        throw Error(errMsg);
+    var message = AwesomeMessage.create(payload); // or use .fromObject if conversion is necessary
+    var Uint8ArrayBuffer = AwesomeMessage.encode(message).finish();
+    axios({
+      method: 'post',
+      url: '/api/awesome',
+      headers: {
+        'Content-Type': 'application/x-protobuf'
+      },
+      responseType: "arraybuffer",
+      data: Uint8ArrayBuffer.buffer
+    })
+    .then(function (response) {
+      var message = AwesomeMessage.decode(new Uint8Array(response.data));
+      var object = AwesomeMessage.toObject(message, {
+          longs: String,
+          enums: String,
+          bytes: String,
+          // see ConversionOptions
+      });
+      console.log('object', object);
+    }).catch(function (error) {
+      console.log(error);
+    });
+});
+</script>
+</html>
